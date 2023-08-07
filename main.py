@@ -456,11 +456,3 @@ class MMDfromThredds:
             element_tree = etree.ElementTree(root)
             name = tc_element.name.replace('.nc', '.xml')
             element_tree.write(self.save_directory / name, pretty_print=True)
-
-
-test = MMDfromThredds('https://thredds.met.no/thredds/catalog/alertness/YOPP_supersite/navy-espc/polarstern/'
-                      'catalog.html', 'testing_directory')
-test.print_cfstdn(include_long_names=True)
-test.map_standard_names()
-test.create_mmds(access_constraint='Open', operational_status='Operational', parent_id='test', collections=['NMAP'],
-                 abstract_name='summary', iso_topic_category='climatologyMeteorologyAtmosphere', activity_type='test')
