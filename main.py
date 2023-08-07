@@ -15,7 +15,7 @@ class MMDfromThredds:
     def __init__(self, catalog_url: str, save_directory: str):
         self.tc_elements = [tc_element for tc_element in threddsclient.crawl(catalog_url)]
         self.save_directory = pathlib.Path(save_directory)
-        pathlib.Path.mkdir(self.save_directory, exist_ok=True)
+        pathlib.Path.mkdir(self.save_directory, exist_ok=True, parents=True)
 
         opendap_urls = [tc_element.opendap_url() for tc_element in self.tc_elements]
         unique_standard_names = set()
