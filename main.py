@@ -255,7 +255,8 @@ class MMDfromThredds:
                 time_coverage_start = ds.attrs['time_coverage_start']
 
             if time_coverage_start_format:
-                time_coverage_start = datetime.strptime(time_coverage_start, time_coverage_start_format)
+                time_coverage_start_datetime = datetime.strptime(time_coverage_start, time_coverage_start_format)
+                time_coverage_start = time_coverage_start_datetime.strftime('%Y-%m-%dT%H:%M:%SZ')
 
             start_date.text = time_coverage_start
             end_date = etree.SubElement(temporal_extent, prepend_mmd('end_date'))
@@ -266,7 +267,8 @@ class MMDfromThredds:
                 time_coverage_end = ds.attrs['time_coverage_end']
 
             if time_coverage_end_format:
-                time_coverage_end = datetime.strptime(time_coverage_end, time_coverage_end_format)
+                time_coverage_end_datetime = datetime.strptime(time_coverage_end, time_coverage_end_format)
+                time_coverage_end = time_coverage_end_datetime.strftime('%Y-%m-%dT%H:%M:%SZ')
 
             end_date.text = time_coverage_end
 
