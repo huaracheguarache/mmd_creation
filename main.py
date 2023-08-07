@@ -69,7 +69,7 @@ class MMDfromThredds:
                 print(invalid_standard_name)
         else:
             print('No invalid standard names!')
-            print('\n')
+        print('\n')
 
         if include_long_names:
             print('Valid CFSTDNs (long names):')
@@ -78,7 +78,7 @@ class MMDfromThredds:
                     print(valid_long_name)
             else:
                 print('No valid long names!')
-                print('\n')
+            print('\n')
 
             print('Invalid CFSTDNs (long names):')
             if len(self.invalid_long_names) > 1:
