@@ -143,7 +143,7 @@ class MMDfromThredds:
                     gcmdsk_matches.append((match_type, uri, gcmdsk_label, gcmdsk_description))
 
             if gcmdsk_matches:
-                print(f'GCDMSK matches for CFSTDN {standard_name}:')
+                print(f'GCMDSK matches for CFSTDN {standard_name}:')
 
                 print('-' * 120)
                 for i, gcmdsk_match in enumerate(gcmdsk_matches, 1):
