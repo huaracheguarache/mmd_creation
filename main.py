@@ -5,7 +5,6 @@ import requests
 import re
 import textwrap
 import pandas as pd
-import functools
 from lxml import etree
 import uuid
 from datetime import datetime
@@ -188,6 +187,25 @@ class MMDfromThredds:
         df = pd.DataFrame.from_dict(cfstdn_to_gcmdsk_mapping, orient='index')
         df.to_csv(self.save_directory / 'mapping.csv', header=False)
 
+    def __prepend_mmd(self, tag: str) -> str:
+        return f'{{http://www.met.no/schema/mmd}}{tag}'
+
+    def __prepend_xml(self, tag: str) -> str:
+        return f'{{http://www.w3.org/XML/1998/namespace}}{tag}'
+
+    def __add_personnel(self, root: etree._Element, name: str, role: str, email: str, organisation: str) -> None:
+        prepend_mmd = self.__prepend_mmd
+
+        personnel = etree.SubElement(root, prepend_mmd('personnel'))
+        name_ = etree.SubElement(personnel, prepend_mmd('name'))
+        name_.text = name
+        role_ = etree.SubElement(personnel, prepend_mmd('role'))
+        role_.text = role
+        email_ = etree.SubElement(personnel, prepend_mmd('email'))
+        email_.text = email
+        organisation_ = etree.SubElement(personnel, prepend_mmd('organisation'))
+        organisation_.text = organisation
+
     def create_mmds(self, access_constraint: str, operational_status: str, parent_id: str, collections: list,
                     abstract_name: str | None = None, time_coverage_start_name: str | None = None,
                     time_coverage_start_format: str | None = None, time_coverage_end_name: str | None = None,
@@ -196,14 +214,11 @@ class MMDfromThredds:
                     geospatial_lat_min_name: str | None = None, geospatial_lon_max_name: str | None = None,
                     geospatial_lon_min_name: str | None = None, geospatial_override: dict | None = None,
                     investigator_name_label: str | None = None, investigator_email_label: str | None = None,
-                    investigator_organisation_label: str | None = None, activity_type: str | None = None,
-                    wms_url=False):
+                    investigator_organisation_label: str | None = None, investigator_override: list | None = None,
+                    activity_type: str | None = None, wms_url=False):
 
-        def prepend(ns, tag):
-            return f'{{{ns}}}{tag}'
-
-        prepend_mmd = functools.partial(prepend, 'http://www.met.no/schema/mmd')
-        prepend_xml = functools.partial(prepend, 'http://www.w3.org/XML/1998/namespace')
+        prepend_mmd = self.__prepend_mmd
+        prepend_xml = self.__prepend_xml
 
         gcmdsk_mapping_file = pd.read_csv(self.save_directory / 'mapping.csv', header=None)
         gcmdsk_mapping = dict(zip(gcmdsk_mapping_file[0], gcmdsk_mapping_file[1]))
@@ -392,26 +407,34 @@ class MMDfromThredds:
             else:
                 west.text = str(ds.attrs['geospatial_lon_min'])
 
-            personnel = etree.SubElement(root, prepend_mmd('personnel'))
-            role = etree.SubElement(personnel, prepend_mmd('role'))
-            role.text = 'Investigator'
-            name = etree.SubElement(personnel, prepend_mmd('name'))
-            if investigator_name_label:
-                name.text = ds.attrs[investigator_name_label]
+            if investigator_override:
+                for person in investigator_override:
+                    self.__add_personnel(root,
+                                         person['name'],
+                                         person['role'],
+                                         person['email'],
+                                         person['organisation'])
             else:
-                name.text = ds.attrs['creator_name']
+                personnel = etree.SubElement(root, prepend_mmd('personnel'))
+                role = etree.SubElement(personnel, prepend_mmd('role'))
+                role.text = 'Investigator'
+                name = etree.SubElement(personnel, prepend_mmd('name'))
+                if investigator_name_label:
+                    name.text = ds.attrs[investigator_name_label]
+                else:
+                    name.text = ds.attrs['creator_name']
 
-            email = etree.SubElement(personnel, prepend_mmd('email'))
-            if investigator_email_label:
-                email.text = ds.attrs[investigator_email_label]
-            else:
-                email.text = ds.attrs['creator_email']
+                email = etree.SubElement(personnel, prepend_mmd('email'))
+                if investigator_email_label:
+                    email.text = ds.attrs[investigator_email_label]
+                else:
+                    email.text = ds.attrs['creator_email']
 
-            organisation = etree.SubElement(personnel, prepend_mmd('organisation'))
-            if investigator_organisation_label:
-                organisation.text = ds.attrs[investigator_organisation_label]
-            else:
-                organisation.text = ds.attrs['institution']
+                organisation = etree.SubElement(personnel, prepend_mmd('organisation'))
+                if investigator_organisation_label:
+                    organisation.text = ds.attrs[investigator_organisation_label]
+                else:
+                    organisation.text = ds.attrs['institution']
 
             def add_data_access(resource_text, type_text, description_text):
                 data_access = etree.SubElement(root, prepend_mmd('data_access'))
