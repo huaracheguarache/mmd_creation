@@ -206,15 +206,28 @@ class MMDfromThredds:
         organisation_ = etree.SubElement(personnel, prepend_mmd('organisation'))
         organisation_.text = organisation
 
-    def create_mmds(self, access_constraint: str, operational_status: str, parent_id: str, collections: list,
-                    abstract_name: str | None = None, time_coverage_start_name: str | None = None,
-                    time_coverage_start_format: str | None = None, time_coverage_end_name: str | None = None,
-                    time_coverage_end_format: str | None = None, iso_topic_category: str | None = None,
-                    keywords_separator: str | None = None, geospatial_lat_max_name: str | None = None,
-                    geospatial_lat_min_name: str | None = None, geospatial_lon_max_name: str | None = None,
-                    geospatial_lon_min_name: str | None = None, geospatial_override: dict | None = None,
-                    investigator_name_label: str | None = None, investigator_email_label: str | None = None,
-                    investigator_organisation_label: str | None = None, investigator_override: list | None = None,
+    def create_mmds(self,
+                    access_constraint: str,
+                    operational_status: str,
+                    parent_id: str,
+                    collections: list,
+                    dataset_production_status: str,
+                    abstract_name: str | None = None,
+                    time_coverage_start_name: str | None = None,
+                    time_coverage_start_format: str | None = None,
+                    time_coverage_end_name: str | None = None,
+                    time_coverage_end_format: str | None = None,
+                    iso_topic_category: str | None = None,
+                    keywords_separator: str | None = None,
+                    geospatial_lat_max_name: str | None = None,
+                    geospatial_lat_min_name: str | None = None,
+                    geospatial_lon_max_name: str | None = None,
+                    geospatial_lon_min_name: str | None = None,
+                    geospatial_override: dict | None = None,
+                    investigator_name_label: str | None = None,
+                    investigator_email_label: str | None = None,
+                    investigator_organisation_label: str | None = None,
+                    investigator_override: list | None = None,
                     activity_type: str | None = None, wms_url=False):
 
         prepend_mmd = self.__prepend_mmd
@@ -252,8 +265,8 @@ class MMDfromThredds:
                 collection_ = etree.SubElement(root, prepend_mmd('collection'))
                 collection_.text = collection
 
-            dataset_production_status = etree.SubElement(root, prepend_mmd('dataset_production_status'))
-            dataset_production_status.text = 'Not available'
+            dataset_production_status_ = etree.SubElement(root, prepend_mmd('dataset_production_status'))
+            dataset_production_status_.text = dataset_production_status
 
             last_metadata_update = etree.SubElement(root, prepend_mmd('last_metadata_update'))
             update = etree.SubElement(last_metadata_update, prepend_mmd('update'))
