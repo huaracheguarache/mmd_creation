@@ -194,9 +194,10 @@ class MMDfromThredds:
                     time_coverage_end_format: str | None = None, iso_topic_category: str | None = None,
                     keywords_separator: str | None = None, geospatial_lat_max_name: str | None = None,
                     geospatial_lat_min_name: str | None = None, geospatial_lon_max_name: str | None = None,
-                    geospatial_lon_min_name: str | None = None, investigator_name_label: str | None = None,
-                    investigator_email_label: str | None = None, investigator_organisation_label: str | None = None,
-                    activity_type: str | None = None, wms_url=False):
+                    geospatial_lon_min_name: str | None = None, geospatial_override: dict | None = None,
+                    investigator_name_label: str | None = None, investigator_email_label: str | None = None,
+                    investigator_organisation_label: str | None = None, activity_type: str | None = None,
+                    wms_url=False):
 
         def prepend(ns, tag):
             return f'{{{ns}}}{tag}'
@@ -362,24 +363,32 @@ class MMDfromThredds:
             north = etree.SubElement(rectangle, prepend_mmd('north'))
             if geospatial_lat_max_name:
                 north.text = str(ds.attrs[geospatial_lat_max_name])
+            elif geospatial_override:
+                north.text = str(geospatial_override['geospatial_lat_max'])
             else:
                 north.text = str(ds.attrs['geospatial_lat_max'])
 
             south = etree.SubElement(rectangle, prepend_mmd('south'))
             if geospatial_lat_min_name:
                 south.text = str(ds.attrs[geospatial_lat_min_name])
+            elif geospatial_override:
+                south.text = str(geospatial_override['geospatial_lat_min'])
             else:
                 south.text = str(ds.attrs['geospatial_lat_min'])
 
             east = etree.SubElement(rectangle, prepend_mmd('east'))
             if geospatial_lon_max_name:
                 east.text = str(ds.attrs[geospatial_lon_max_name])
+            elif geospatial_override:
+                east.text = str(geospatial_override['geospatial_lon_max'])
             else:
                 east.text = str(ds.attrs['geospatial_lon_max'])
 
             west = etree.SubElement(rectangle, prepend_mmd('west'))
             if geospatial_lon_min_name:
                 west.text = str(ds.attrs[geospatial_lon_min_name])
+            elif geospatial_override:
+                west.text = str(geospatial_override['geospatial_lon_min'])
             else:
                 west.text = str(ds.attrs['geospatial_lon_min'])
 
