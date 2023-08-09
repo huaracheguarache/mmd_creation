@@ -228,6 +228,7 @@ class MMDfromThredds:
                     investigator_organisation_label: str | None = None,
                     investigator_override: list | None = None,
                     data_center: dict | None = None,
+                    add_related_information: dict | None = None,
                     iso_topic_category: str | None = None,
                     project: dict | None = None,
                     activity_type: str | None = None,
@@ -496,13 +497,22 @@ class MMDfromThredds:
             related_dataset.attrib['relation_type'] = 'parent'
             related_dataset.text = parent_id
 
-            related_information = etree.SubElement(root, prepend_mmd('related_information'))
-            resource = etree.SubElement(related_information, prepend_mmd('resource'))
+            related_information_ = etree.SubElement(root, prepend_mmd('related_information'))
+            resource = etree.SubElement(related_information_, prepend_mmd('resource'))
             resource.text = str(tc_element.url.replace('xml', 'html'))
-            type_ = etree.SubElement(related_information, prepend_mmd('type'))
+            type_ = etree.SubElement(related_information_, prepend_mmd('type'))
             type_.text = 'Dataset landing page'
-            description = etree.SubElement(related_information, prepend_mmd('description'))
+            description = etree.SubElement(related_information_, prepend_mmd('description'))
             description.text = 'Dataset landing page'
+
+            if add_related_information:
+                related_information_ = etree.SubElement(root, prepend_mmd('related_information'))
+                resource = etree.SubElement(related_information_, prepend_mmd('resource'))
+                resource.text = add_related_information['resource']
+                type_ = etree.SubElement(related_information_, prepend_mmd('type'))
+                type_.text = add_related_information['type']
+                description = etree.SubElement(related_information_, prepend_mmd('description'))
+                description.text = add_related_information['description']
 
             activity_type_ = etree.SubElement(root, prepend_mmd('activity_type'))
             if activity_type:
