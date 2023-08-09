@@ -227,6 +227,7 @@ class MMDfromThredds:
                     investigator_email_label: str | None = None,
                     investigator_organisation_label: str | None = None,
                     investigator_override: list | None = None,
+                    data_center: dict | None = None,
                     iso_topic_category: str | None = None,
                     project: dict | None = None,
                     activity_type: str | None = None,
@@ -458,6 +459,16 @@ class MMDfromThredds:
                     organisation.text = ds.attrs[investigator_organisation_label]
                 else:
                     organisation.text = ds.attrs['institution']
+
+            if data_center:
+                data_center_ = etree.SubElement(root, prepend_mmd('data_center'))
+                data_center_name = etree.SubElement(data_center_, prepend_mmd('data_center_name'))
+                short_name = etree.SubElement(data_center_name, prepend_mmd('short_name'))
+                short_name.text = data_center['short_name']
+                long_name = etree.SubElement(data_center_name, prepend_mmd('long_name'))
+                long_name.text = data_center['long_name']
+                data_center_url = etree.SubElement(data_center_, prepend_mmd('data_center_url'))
+                data_center_url.text = data_center['data_center_url']
 
             def add_data_access(resource_text, type_text, description_text):
                 data_access = etree.SubElement(root, prepend_mmd('data_access'))
