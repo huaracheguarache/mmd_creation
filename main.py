@@ -432,6 +432,17 @@ class MMDfromThredds:
             else:
                 west.text = str(ds.attrs['geospatial_lon_min'])
 
+            # Correct longitudes if they're outside [-180, 180)
+            if float(east.text) >= 180:
+                east.text = str(float(east.text) - 360)
+            elif float(east.text) < -180:
+                east.text = str(float(east.text) + 360)
+
+            if float(west.text) >= 180:
+                west.text = str(float(west.text) - 360)
+            elif float(west.text) < -180:
+                west.text = str(float(west.text) + 360)
+
             if investigator_override:
                 for person in investigator_override:
                     self.__add_personnel(root,
