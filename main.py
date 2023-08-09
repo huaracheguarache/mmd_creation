@@ -208,7 +208,6 @@ class MMDfromThredds:
 
     def create_mmds(self,
                     access_constraint: str,
-                    operational_status: str,
                     parent_id: str,
                     collections: list,
                     dataset_production_status: str,
@@ -217,18 +216,21 @@ class MMDfromThredds:
                     time_coverage_start_format: str | None = None,
                     time_coverage_end_name: str | None = None,
                     time_coverage_end_format: str | None = None,
-                    iso_topic_category: str | None = None,
                     keywords_separator: str | None = None,
                     geospatial_lat_max_name: str | None = None,
                     geospatial_lat_min_name: str | None = None,
                     geospatial_lon_max_name: str | None = None,
                     geospatial_lon_min_name: str | None = None,
                     geospatial_override: dict | None = None,
+                    operational_status: str | None = None,
                     investigator_name_label: str | None = None,
                     investigator_email_label: str | None = None,
                     investigator_organisation_label: str | None = None,
                     investigator_override: list | None = None,
-                    activity_type: str | None = None, wms_url=False):
+                    iso_topic_category: str | None = None,
+                    project: dict | None = None,
+                    activity_type: str | None = None,
+                    wms_url=False):
 
         prepend_mmd = self.__prepend_mmd
         prepend_xml = self.__prepend_xml
@@ -316,8 +318,9 @@ class MMDfromThredds:
             resource = etree.SubElement(use_constraint, prepend_mmd('resource'))
             resource.text = 'http://spdx.org/licenses/CC-BY-4.0'
 
-            operational_status_ = etree.SubElement(root, prepend_mmd('operational_status'))
-            operational_status_.text = operational_status
+            if operational_status:
+                operational_status_ = etree.SubElement(root, prepend_mmd('operational_status'))
+                operational_status_.text = operational_status
 
             keywords = etree.SubElement(root, prepend_mmd('keywords'))
             keywords.attrib['vocabulary'] = 'None'
@@ -383,6 +386,13 @@ class MMDfromThredds:
             resource.text = 'https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords'
             separator = etree.SubElement(keywords, prepend_mmd('separator'))
             separator.text = '>'
+
+            if project:
+                project_ = etree.SubElement(root, prepend_mmd('project'))
+                short_name = etree.SubElement(project_, prepend_mmd('short_name'))
+                short_name.text = project['short_name']
+                long_name = etree.SubElement(project_, prepend_mmd('long_name'))
+                long_name.text = project['long_name']
 
             geographic_extent = etree.SubElement(root, prepend_mmd('geographic_extent'))
             rectangle = etree.SubElement(geographic_extent, prepend_mmd('rectangle'))
