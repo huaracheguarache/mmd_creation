@@ -8,6 +8,7 @@ import pandas as pd
 from lxml import etree
 import uuid
 from datetime import datetime
+import numpy as np
 
 
 class MMDfromThredds:
@@ -216,6 +217,7 @@ class MMDfromThredds:
                     time_coverage_start_format: str | None = None,
                     time_coverage_end_name: str | None = None,
                     time_coverage_end_format: str | None = None,
+                    time_use_variable: str | None = None,
                     keywords_separator: str | None = None,
                     geospatial_lat_max_name: str | None = None,
                     geospatial_lat_min_name: str | None = None,
@@ -282,24 +284,33 @@ class MMDfromThredds:
 
             temporal_extent = etree.SubElement(root, prepend_mmd('temporal_extent'))
             start_date = etree.SubElement(temporal_extent, prepend_mmd('start_date'))
-            if time_coverage_start_name:
+
+            if time_use_variable:
+                time_coverage_start = np.datetime_as_string(ds[time_use_variable].values[0], unit='s', timezone='UTC')
+            elif time_coverage_start_name:
                 time_coverage_start = ds.attrs[time_coverage_start_name]
             else:
                 time_coverage_start = ds.attrs['time_coverage_start']
 
-            if time_coverage_start_format:
+            if time_use_variable:
+                pass
+            elif time_coverage_start_format:
                 time_coverage_start_datetime = datetime.strptime(time_coverage_start, time_coverage_start_format)
                 time_coverage_start = time_coverage_start_datetime.strftime('%Y-%m-%dT%H:%M:%SZ')
 
             start_date.text = time_coverage_start
-            end_date = etree.SubElement(temporal_extent, prepend_mmd('end_date'))
 
-            if time_coverage_end_name:
+            end_date = etree.SubElement(temporal_extent, prepend_mmd('end_date'))
+            if time_use_variable:
+                time_coverage_end = np.datetime_as_string(ds[time_use_variable].values[-1], unit='s', timezone='UTC')
+            elif time_coverage_end_name:
                 time_coverage_end = ds.attrs[time_coverage_end_name]
             else:
                 time_coverage_end = ds.attrs['time_coverage_end']
 
-            if time_coverage_end_format:
+            if time_use_variable:
+                pass
+            elif time_coverage_end_format:
                 time_coverage_end_datetime = datetime.strptime(time_coverage_end, time_coverage_end_format)
                 time_coverage_end = time_coverage_end_datetime.strftime('%Y-%m-%dT%H:%M:%SZ')
 
