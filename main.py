@@ -56,7 +56,7 @@ class MMDfromThredds:
     def print_cfstdn(self, include_long_names=False):
         print('Valid CFSTDNs (standard names):')
         if len(self.valid_standard_names) > 1:
-            for valid_standard_name in self.valid_standard_names:
+            for valid_standard_name in sorted(self.valid_standard_names):
                 print(valid_standard_name)
         else:
             print('No valid standard names!')
@@ -64,7 +64,7 @@ class MMDfromThredds:
 
         print('Invalid CFSTDNs (standard names):')
         if len(self.invalid_standard_names) > 1:
-            for invalid_standard_name in self.invalid_standard_names:
+            for invalid_standard_name in sorted(self.invalid_standard_names):
                 print(invalid_standard_name)
         else:
             print('No invalid standard names!')
@@ -73,7 +73,7 @@ class MMDfromThredds:
         if include_long_names:
             print('Valid CFSTDNs (long names):')
             if len(self.valid_long_names) > 1:
-                for valid_long_name in self.valid_long_names:
+                for valid_long_name in sorted(self.valid_long_names):
                     print(valid_long_name)
             else:
                 print('No valid long names!')
@@ -81,7 +81,7 @@ class MMDfromThredds:
 
             print('Invalid CFSTDNs (long names):')
             if len(self.invalid_long_names) > 1:
-                for invalid_long_name in self.invalid_long_names:
+                for invalid_long_name in sorted(self.invalid_long_names):
                     print(invalid_long_name)
             else:
                 print('No invalid long names!')
