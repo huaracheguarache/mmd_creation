@@ -356,7 +356,10 @@ class MMDfromThredds:
                     standard_name = ds[variable].standard_name
                 except AttributeError:
                     # Sometimes the standard_name is missing!
-                    standard_name = ds[variable].long_name
+                    try:
+                        standard_name = ds[variable].long_name
+                    except AttributeError:
+                        pass
 
                 if standard_name in self.valid_standard_names:
                     cfstdns.add(standard_name)
