@@ -359,7 +359,7 @@ class MMDfromThredds:
                     try:
                         standard_name = ds[variable].long_name
                     except AttributeError:
-                        pass
+                        standard_name = 'NOT AVAILABLE'
 
                 if standard_name in self.valid_standard_names:
                     cfstdns.add(standard_name)
