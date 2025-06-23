@@ -1,0 +1,14 @@
+[project]
+name = "mmd-creation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "lxml>=5.4.0",
+    "netcdf4>=1.7.2",
+    "numpy>=2.3.1",
+    "pandas>=2.3.0",
+    "threddsclient>=0.4.6",
+    "xarray>=2025.6.1",
+]
